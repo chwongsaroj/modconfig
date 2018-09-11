@@ -1,0 +1,36 @@
+
+
+## zookeeper
+
+http://zookeeper.apache.org/
+https://www.tutorialspoint.com/zookeeper/zookeeper_installation.htm
+
+hadoop@namenode01 ~]$ wget https://archive.apache.org/dist/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz
+[hadoop@namenode01 ~]$ tar zxvf zookeeper-3.4.6.tar.gz
+
+[hadoop@namenode01 ~]$ mv zookeeper-3.4.6 zookeeper
+
+[hadoop@namenode01 ~]$ cd zookeeper/
+[hadoop@namenode01 zookeeper]$ cd conf/
+[hadoop@namenode01 conf]$ mv zoo_sample.cfg zoo.cfg
+[hadoop@namenode01 conf]$ vi zoo.cfg
+
+dataDir=/home/hadoop/zookeeper
+
+[hadoop@namenode01 conf]$ mkdir /home/hadoop/zookeeper/data
+[hadoop@namenode01 conf]$ chmod 777 /home/hadoop/zookeeper/data
+
+[hadoop@namenode01 conf]$ cd ../bin/
+[hadoop@namenode01 bin]$ ls
+README.txt  zkCleanup.sh  zkCli.cmd  zkCli.sh  zkEnv.cmd  zkEnv.sh  zkServer.cmd  zkServer.sh
+[hadoop@namenode01 bin]$
+
+[hadoop@namenode01 bin]$ ./zkServer.sh start
+JMX enabled by default
+Using config: /home/hadoop/zookeeper/bin/../conf/zoo.cfg
+Starting zookeeper ... STARTED
+[hadoop@namenode01 bin]$
+[hadoop@namenode01 bin]$ ./zkServer.sh status
+JMX enabled by default
+Using config: /home/hadoop/zookeeper/bin/../conf/zoo.cfg
+Mode: standalone

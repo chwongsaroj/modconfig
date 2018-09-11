@@ -1,0 +1,44 @@
+
+
+####  Hadoop Command Line ####
+
+login user : vagrant
+      pass : vagrant
+	
+# passwd      # ใส่ password root  ครับ
+
+#  หลังจากนั้น ให้ 
+
+# su - hadoop
+
+# start-dfs.sh
+# start-yarn.sh
+
+# jps            # เพื่อดูสถานะคับ
+
+###################################
+ระบบ Hadoop  ที่ผมทำใส่ใน image  นี้ สามารถดูผ่าน browser  ได้ ครับ
+
+http://192.168.5.10:50070    < ดู hdfs 
+http://192.168.5.10:8088     < yarn
+
+## cli  หลักๆ คือการ นำข้อมูลเข้า ระบบ Hadoop
+
+1.) การดูข้อมูลใน Hadoop
+  
+# hadoop fs -ls
+
+2.) การนำข้อมูลเข้า hdfs
+
+# hadoop fs -touch AAA
+# hadoop fs -put AAA /user
+
+# hadoop fs -ls /user   ## จะเห็น ข้อมูลที่เรา put  ขึ้นไป
+
+
+3.)การ download  ข้อมูล จาก hdfs  มา local
+
+# rm -fr AAA   #  ลบของเดิมทิ้งก่อน
+# hadoop fs -get /user/AAA  /home/hadoop  # copy  มาไว้ที่ /home/hadoop
+
+

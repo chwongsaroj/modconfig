@@ -1,0 +1,82 @@
+
+
+##  Flume
+
+https://data-flair.training/blogs/apache-flume-installation-tutorial/
+https://www.tutorialspoint.com/apache_flume/apache_flume_configuration.htm
+https://haroonferoze.wordpress.com/2016/08/24/hadoop-2-7-2-multinode-cluster-and-apache-flume-on-ubuntu-16-04/
+http://flume.praveendeshmane.co.in/flume/flume-1-6-0-installation-on-ubuntu-14-04.jsp
+
+
+http://archive.apache.org/dist/flume/1.6.0/
+
+[hadoop@namenode01 ~]$ wget http://archive.apache.org/dist/flume/1.6.0/apache-flume-1.6.0-bin.tar.gz
+[hadoop@namenode01 ~]$ tar zxvf apache-flume-1.6.0-bin.tar.gz
+
+[hadoop@namenode01 ~]$ mv apache-flume-1.6.0-bin flume
+
+[hadoop@namenode01 ~]$ vi .bashrc
+..
+#Flume
+export FLUME_HOME=/home/hadoop/flume
+export PATH=$PATH:$FLUME_HOME/bin
+
+[hadoop@namenode01 ~]$ source .bashrc
+
+[hadoop@namenode01 ~]$ flume-ng --help
+
+@root
+[root@namenode01 ~]# cp /var/log/messages /home/hadoop/
+[root@namenode01 ~]# chmod 777 /home/hadoop/messages
+
+
+@ Hadoop
+[hadoop@namenode01 conf]$ cd /home/hadoop/flume/conf/
+[hadoop@namenode01 conf]$ cd /home/hadoop/flume/conf/
+[hadoop@namenode01 conf]$ echo $JAVA_HOME
+/opt/jdk1.8.0_172/
+
+[hadoop@namenode01 conf]$ vi flume-env.sh
+..
+     22 export JAVA_HOME=/opt/jdk1.8.0_172/
+	 
+[hadoop@namenode01 conf]$ vi flume.conf
+
+ileAgent.sources = tail
+FileAgent.channels = Channel-2
+FileAgent.sinks = HDFS
+FileAgent.sources.tail.type = exec
+FileAgent.sources.tail.command = tail -F /home/dataflair/access.log
+FileAgent.sources.tail.channels = Channel-2
+FileAgent.sinks.HDFS.type = hdfs
+FileAgent.sinks.HDFS.hdfs.path = hdfs://localhost:9000/flume
+FileAgent.sinks.HDFS.hdfs.fileType = DataStream
+FileAgent.sinks.HDFS.channel = Channel-2
+FileAgent.channels.Channel-2.type = memory
+
+[hadoop@namenode01 conf]$ flume-ng agent --conf ./conf -f /home/hadoop/flume/conf/flume.conf -n FileAgent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

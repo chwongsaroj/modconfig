@@ -1,0 +1,122 @@
+
+
+### HIVE  ###
+
+http://apache.claz.org/hive/
+
+
+[hadoop@namenode01 ~]$ pwd
+/home/hadoop
+
+[hadoop@namenode01 ~]$ wget http://apache.claz.org/hive/hive-2.3.3/apache-hive-2.3.3-bin.t ar.gz
+
+[hadoop@namenode01 ~]$ ls
+apache-hive-2.3.3-bin.tar.gz  hadoop  hadoop-2.7.2.tar.gz  hadoopdata
+[hadoop@namenode01 ~]$ tar zxvf apache-hive-2.3.3-bin.tar.gz
+[hadoop@namenode01 ~]$ vi .bashrc
+
+# Add End Line ##
+## Hive  ##
+export HIVE_HOME="/home/hadoop/hive"
+export PATH=$PATH:$HIVE_HOME/bin
+
+
+[hadoop@namenode01 bin]$ pwd
+/home/hadoop/hive/bin
+[hadoop@namenode01 bin]$
+[hadoop@namenode01 bin]$ vi hive-config.sh
+export HADOOP_HOME=/home/hadoop/hadoop
+
+[hadoop@namenode01 ~]$ hadoop fs -mkdir -p /tmp
+[hadoop@namenode01 ~]$ hadoop fs -chmod g+w /tmp
+
+[hadoop@namenode01 ~]$ hadoop fs -mkdir -p /user/{hive,warehouse}
+[hadoop@namenode01 ~]$ hadoop fs -chmod g+w /user/hive/warehouse
+
+
+
+[hadoop@namenode01 bin]$ pwd
+/home/hadoop/hive/bin
+[hadoop@namenode01 bin]$ ./hive
+..
+..
+hive>
+
+## Configuring Metastore of Hive ##
+
+[hadoop@namenode01 conf]$ pwd
+/home/hadoop/hive/conf
+[hadoop@namenode01 conf]$ cp hive-default.xml.template hive-default.xml
+[hadoop@namenode01 conf]$ vi hive-default.xml
+..
+..
+   1194     <name>hive.cli.print.current.db</name>
+   1195     <value>true</value>
+..
+..
+
+
+#####
+
+[root@namenode01 ~]# yum install mariadb-server
+[root@namenode01 ~]# systemctl restart mariadb
+[root@namenode01 ~]# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 2
+Server version: 5.5.56-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2017, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]>
+
+mysql> CREATE USER 'hiveuser'@'%' IDENTIFIED BY '!@1234!@'; 
+mysql> GRANT all on *.* to 'hiveuser'@localhost identified by '!@1234!@';
+mysql>  flush privileges;
+
+https://saurzcode.in/2015/01/configure-mysql-metastore-hive/
+[root@namenode01 ~]# yum install mysql-connector-java
+ln -s /usr/share/java/mysql-connector-java.jar $HIVE_HOME/lib/mysql-connector-java.jar
+
+
+
+####
+
+https://www.guru99.com/installation-configuration-hive-mysql.html
+https://www.tutorialspoint.com/hive/hive_installation.htm
+https://saurzcode.in/2015/01/configure-mysql-metastore-hive/
+
+
+
+
+#############################################################################################################################
+[hadoop@namenode01 conf]$ pwd
+/home/hadoop/hive/conf
+
+[hadoop@namenode01 conf]$ cp hive-log4j2.properties.template hive-log4j2.properties
+
+
+
+hive> CREATE TABLE test_tbl(id INT, country STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+
+CREATE TABLE test_tbl(id INT, country STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE;
+
+#############################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,8 @@
+
+
+## Nicehash                                                                                                       
+																									   
+API ID : 515504
+API KEY : e4a07320-ddd1-f4c4-842e-7786f6c6aaa2  
+
+https://api.nicehash.com/api?method=balance&id=515504&key=e4a07320-ddd1-f4c4-842e-7786f6c6aaa2

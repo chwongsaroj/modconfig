@@ -1,0 +1,264 @@
+
+###  HBase   ###
+
+http://apache.mirror.cdnetworks.com/hbase/stable/
+http://apache.mirror.cdnetworks.com/hbase/stable/
+http://hueie.blogspot.com/2017/04/hbase-125-installation-with-hadoop-273.html
+https://www.guru99.com/hbase-installation-guide.html
+
+
+[hadoop@namenode01 ~]$ wget http://apache.mirror.cdnetworks.com/hbase/stable/hbase-1.2.6.1-bin.tar.gz
+[hadoop@namenode01 ~]$ tar zxvf hbase-1.2.6.1-bin.tar.gz
+[hadoop@namenode01 ~]$ mv hbase-1.2.6.1 hbase
+
+[hadoop@namenode01 ~]$ vi .bashrc
+..
+#HBASE
+export HBASE_HOME=/home/hadoop/hbase
+export PATH=$PATH:$HBASE_HOME/bin
+
+[hadoop@namenode01 ~]$ source .bashrc
+
+
+[hadoop@namenode01 conf]$ pwd
+/home/hadoop/hbase/conf
+[hadoop@namenode01 conf]$ vi hbase-env.sh
+..
+     27 export JAVA_HOME=/opt/jdk1.8.0_172/
+	 
+[hadoop@namenode01 conf]$ vi hbase-site.xml
+
+<configuration>
+
+   <property>
+      <name>hbase.rootdir</name>
+      <value>hdfs://localhost:8030/hbase</value>
+   </property>
+   <property>
+     <name>hbase.cluster.distributed</name>
+     <value>true</value>
+   </property>
+
+
+</configuration>
+
+[hadoop@namenode01 bin]$ pwd
+/home/hadoop/hbase/bin
+[hadoop@namenode01 bin]$ start-hbase.sh
+
+[hadoop@namenode01 bin]$ hadoop fs -mkdir /hbase
+
+[hadoop@namenode01 bin]$ cd
+[hadoop@namenode01 ~]$ source .bashrc
+[hadoop@namenode01 ~]$ hbase shell
+
+
+> create 'hbase_test_table','id data'
+> list
+
+create 'hbase_test_table_2','id data'
+========================================
+<configuration>
+
+    <property>
+        <name>hbase.rootdir</name>
+        <value>hdfs://localhost:9000/hbase</value>
+    </property>
+    <property>
+        <name>hbase.cluster.distributed</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.quorum</name>
+        <value>localhost</value>
+    </property>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.property.clientPort</name>
+        <value>2181</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.property.dataDir</name>
+        <value>/home/hadoop/hbase/zookeeper</value>
+    </property>
+
+</configuration>
+==========================================================
+
+### HBase Lab
+
+hbase(main):008:0> create 'tb1','data'
+hbase(main):010:0> put 'tb1','row1','data:id','101'
+hbase(main):011:0> put 'tb1','row1','data:name','usera'
+hbase(main):011:0> put 'tb1','row1','data:name','usera'
+hbase(main):013:0> put 'tb1','row2','data:id','102'
+hbase(main):014:0> put 'tb1','row2','data:name','userb'
+hbase(main):015:0> put 'tb1','row2','data:salary','15000'
+
+hbase(main):016:0> scan 'tb1'
+
+===========================================================
+
+### SQOOP to HBASE
+https://acadgild.com/blog/how-to-import-table-from-mysql-to-hbase
+
+MariaDB [(none)]> use moddb;
+MariaDB [moddb]> select * from customer;
++------+--------+------+--------+
+| id   | name   | age  | salary |
++------+--------+------+--------+
+| 1    | user01 | 25   |  15000 |
+| 2    | user02 | 30   |  15000 |
+| 3    | user03 | 35   |  15000 |
+| 4    | user04 | 40   |  13000 |
+| 5    | user05 | 50   |  30000 |
++------+--------+------+--------+
+5 rows in set (0.02 sec)
+
+hbase(main):001:0> create 'customerhb','cus_detail'
+
+
+[hadoop@namenode01 ~]$ sqoop import --connect jdbc:mysql://localhost/moddb \
+> --username sqoop \
+> -P \
+> --tables customer \
+> --hbase-table hbcustomer \
+> --column-family custumerhb \
+> --hbase-create-table
+
+############################################################################[hadoop@namenode01 ~]$ sqoop import --connect jdbc:mysql://localhost/moddb --username sqoop -P --table customer --hbase-table customerhb --column-family cus_detail --hbase-row-key id -m 1
+
+[hadoop@namenode01 ~]$  sqoop import --connect jdbc:mysql://localhost/moddb --username sqoop -P --table customer --hbase-table customerhb --column-family cus_detail --hbase -create-table --hbase-row-key id -m 1
+
+
+
+https://www.youtube.com/watch?v=_8YNzsZR8xM
+
+#################################################################################
+
+## HIVE to HBASE
+
+hive (default)> create table hivetab1(k int,v int)
+              > stored by 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+              > with serdeproperties("hbase.columns.mapping"=":key,x:a");
+
+
+create table hivetab1(k int,v int) stored by 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' with serdeproperties("hbase.columns.mapping"=":key,x:a"); 
+
+
+######   NEW
+https://acadgild.com/blog/integrating-hive-hbase
+
+hbase(main):001:0> create 'employee','personaldetails','deptdetails'
+put 'employee','eid01','personaldetails:fname','Brundesh'
+put 'employee','eid01','personaldetails:Lname','R'
+put 'employee','eid01','personaldetails:salary','10000'
+put 'employee','eid01','deptdetails:name','R&D'
+put 'employee','eid01','deptdetails:location','Banglore'
+put 'employee','eid02','personaldetails:fname','Abhay'
+put 'employee','eid02','personaldetails:Lname','Kumar'
+put 'employee','eid02','personaldetails:salary','100000'
+
+create external table employee_hbase(Eid String, f_name string, s_name string, salary int) STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' with serdeproperties ("hbase.columns.mapping"=":key,personaldetails:fname,personaldetails:Lname,personaldetails:salary") tblproperties("hbase.table.name"="employee");
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==================================================================================
+### edit mapred-site.xml
+
+http://doc.mapr.com/display/MapR/mapred-site.xml
+
+[hadoop@namenode01 hadoop]$ pwd
+/home/hadoop/hadoop/etc/hadoop
+[hadoop@namenode01 hadoop]$ vi mapred-site.xml
+
+<configuration>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+
+    <property>
+      <name>mapreduce.jobhistory.address</name>
+      <value>localhost:10020</value>
+      </property>
+      <property>
+      <name>mapreduce.jobhistory.webapp.address</name>
+      <value>localhohst:19888</value>
+    </property>
+
+</configuration>
+
+=================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
